@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    environment:
+      - AUTH_HOST=host.docker.internal
+      - AUTH_PORT=8000
+      - DISTANCE_HOST=host.docker.internal
+      - DISTANCE_PORT=5002
+      - ROUTES_HOST=host.docker.internal
+      - ROUTES_PORT=3000
+    ports:
+      - "8888:8888"
+      - "9876:9876"
+    command: npm start
+networks:
+  default:
+    name: routes_shared_network
+    external: true

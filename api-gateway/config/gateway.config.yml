@@ -23,11 +23,11 @@ serviceEndpoints:
   httpbin:
     url: "https://httpbin.org"
   authService:
-    url: "http://localhost:8000"
+    url: "http://${AUTH_HOST:-localhost}:${AUTH_PORT:-8000}"
   distanceService:
-    url: "http://localhost:5002"
+    url: "http://${DISTANCE_HOST:-localhost}:${DISTANCE_PORT:-5002}"
   routesService:
-    url: "http://localhost:3000"
+    url: "http://${ROUTES_HOST:-localhost}:${ROUTES_PORT:-3000}"
 policies:
   - basic-auth
   - cors
