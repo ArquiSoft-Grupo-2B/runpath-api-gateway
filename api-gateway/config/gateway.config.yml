@@ -1,15 +1,33 @@
 http:
-  port: 8080
+  port: 8888
 admin:
   port: 9876
   host: localhost
 apiEndpoints:
   api:
-    host: localhost
-    paths: '/ip'
+    host: "*"
+    paths: "/ip"
+  authApi:
+    host: "*"
+    paths:
+      - "/api/auth/*"
+  distanceApi:
+    host: "*"
+    paths:
+      - "/api/distance/*"
+  routesApi:
+    host: "*"
+    paths:
+      - "/api/routes/*"
 serviceEndpoints:
   httpbin:
-    url: 'https://httpbin.org'
+    url: "https://httpbin.org"
+  authService:
+    url: "http://localhost:8000"
+  distanceService:
+    url: "http://localhost:5002"
+  routesService:
+    url: "http://localhost:3000"
 policies:
   - basic-auth
   - cors
@@ -24,9 +42,38 @@ pipelines:
     apiEndpoints:
       - api
     policies:
-    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
-    # - key-auth:
+      # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+      # - key-auth:
       - proxy:
           - action:
-              serviceEndpoint: httpbin 
+              serviceEndpoint: httpbin
               changeOrigin: true
+  authPipeline:
+    apiEndpoints:
+      - authApi
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: authService
+              changeOrigin: true
+              stripPath: true
+
+  distancePipeline:
+    apiEndpoints:
+      - distanceApi
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: distanceService
+              changeOrigin: true
+              stripPath: true
+
+  routesPipeline:
+    apiEndpoints:
+      - routesApi
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: routesService
+              changeOrigin: true
+              stripPath: true
