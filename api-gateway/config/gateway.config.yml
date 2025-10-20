@@ -37,11 +37,14 @@ policies:
   - oauth2
   - proxy
   - rate-limit
+  - firebase-auth
 pipelines:
   default:
     apiEndpoints:
       - api
     policies:
+      - firebase-auth:
+          - action: {}
       # Uncomment `key-auth:` when instructed to in the Getting Started guide.
       # - key-auth:
       - proxy:
@@ -52,6 +55,8 @@ pipelines:
     apiEndpoints:
       - authApi
     policies:
+      - firebase-auth:
+          - action: {}
       - proxy:
           - action:
               serviceEndpoint: authService
