@@ -10,15 +10,26 @@ apiEndpoints:
   authApi:
     host: "*"
     paths:
-      - "/api/auth/*"
+      - "/authApi/*"
   distanceApi:
     host: "*"
     paths:
-      - "/api/distance/*"
-  routesApi:
+      - "/distanceApi/*"
+  routesApi-public:
     host: "*"
     paths:
-      - "/api/routes/*"
+      - "/routesApi/*"
+    methods:
+      - GET
+  routesApi-private:
+    host: "*"
+    paths:
+      - "/routesApi/routes/*"
+    methods:
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
 serviceEndpoints:
   httpbin:
     url: "https://httpbin.org"
@@ -43,6 +54,11 @@ pipelines:
     apiEndpoints:
       - api
     policies:
+      - log:
+          - action:
+              message:
+                "[Default Pipeline] ${req.method} ${req.originalUrl} -
+                Processed: ${req.url}"
       - firebase-auth:
           - action: {}
       # Uncomment `key-auth:` when instructed to in the Getting Started guide.
@@ -55,8 +71,11 @@ pipelines:
     apiEndpoints:
       - authApi
     policies:
-      - firebase-auth:
-          - action: {}
+      - log:
+          - action:
+              message:
+                "[Auth API] ${req.method} ${req.originalUrl} - Target:
+                ${req.url}"
       - proxy:
           - action:
               serviceEndpoint: authService
@@ -67,16 +86,43 @@ pipelines:
     apiEndpoints:
       - distanceApi
     policies:
+      - log:
+          - action:
+              message:
+                "[Distance API] ${req.method} ${req.originalUrl} - Target:
+                ${req.url}"
       - proxy:
           - action:
               serviceEndpoint: distanceService
               changeOrigin: true
               stripPath: true
 
-  routesPipeline:
+  routesPublicPipeline:
     apiEndpoints:
-      - routesApi
+      - routesApi-public
     policies:
+      - log:
+          - action:
+              message:
+                "[Routes Public API] ${req.method} ${req.originalUrl} -
+                Processing: ${req.url}"
+      - proxy:
+          - action:
+              serviceEndpoint: routesService
+              changeOrigin: true
+              stripPath: true
+
+  routesPrivatePipeline:
+    apiEndpoints:
+      - routesApi-private
+    policies:
+      - log:
+          - action:
+              message:
+                "[Routes Private API] ${req.method} ${req.originalUrl} - Target:
+                ${req.url}"
+      - firebase-auth:
+          - action: {}
       - proxy:
           - action:
               serviceEndpoint: routesService
