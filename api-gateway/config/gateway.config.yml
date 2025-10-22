@@ -24,12 +24,16 @@ apiEndpoints:
   routesApi-private:
     host: "*"
     paths:
-      - "/routesApi/routes/*"
+      - "/routesApi/*"
     methods:
       - POST
       - PUT
       - DELETE
       - PATCH
+  notificationApi:
+    host: "*"
+    paths:
+      - "/notificationApi/*"
 serviceEndpoints:
   httpbin:
     url: "https://httpbin.org"
@@ -39,6 +43,8 @@ serviceEndpoints:
     url: "http://${DISTANCE_HOST:-localhost}:${DISTANCE_PORT:-5002}"
   routesService:
     url: "http://${ROUTES_HOST:-localhost}:${ROUTES_PORT:-3000}"
+  notificationService:
+    url: "http://${NOTIFICATION_HOST:-localhost}:${NOTIFICATION_PORT:-8085}"
 policies:
   - basic-auth
   - cors
@@ -126,5 +132,20 @@ pipelines:
       - proxy:
           - action:
               serviceEndpoint: routesService
+              changeOrigin: true
+              stripPath: true
+
+  notificationPipeline:
+    apiEndpoints:
+      - notificationApi
+    policies:
+      - log:
+          - action:
+              message:
+                "[Notification API] ${req.method} ${req.originalUrl} - Target:
+                ${req.url}"
+      - proxy:
+          - action:
+              serviceEndpoint: notificationService
               changeOrigin: true
               stripPath: true
