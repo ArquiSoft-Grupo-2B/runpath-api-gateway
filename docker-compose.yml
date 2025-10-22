@@ -1,0 +1,14 @@
+services:
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    env_file:
+      - .env
+    ports:
+      - "8888:8888"
+      - "9876:9876"
+    command: npm start
+networks:
+  default:
+    name: routes_shared_network
+    external: true

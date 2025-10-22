@@ -1,0 +1,35 @@
+# Core
+db:
+  redis:
+    emulate: true
+    namespace: EG
+
+plugins:
+  firebase-auth:
+    package: ./plugins/firebase-auth/index.js
+
+policies:
+  - cors
+  - expression
+  - headers
+  - oauth2
+  - proxy
+  - rate-limit
+  - firebase-auth
+
+crypto:
+  cipherKey: sensitiveKey
+  algorithm: aes256
+  saltRounds: 10
+
+# OAuth2 Settings
+session:
+  secret: keyboard cat
+  resave: false
+  saveUninitialized: false
+accessTokens:
+  timeToExpiry: 7200000
+refreshTokens:
+  timeToExpiry: 7200000
+authorizationCodes:
+  timeToExpiry: 300000
