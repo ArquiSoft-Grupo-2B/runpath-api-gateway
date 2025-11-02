@@ -5,13 +5,16 @@ services:
     env_file:
       - .env
     ports:
-      - "8888:8888"
-      - "9876:9876"
+      - '8888:8888'
+      - '9876:9876'
     command: npm start
     networks:
+      - orchestration_net
       - frontend_net
       - backend_net
 networks:
+  orchestration_net:
+    external: true
   frontend_net:
     external: true
   backend_net:
