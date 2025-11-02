@@ -8,7 +8,11 @@ services:
       - "8888:8888"
       - "9876:9876"
     command: npm start
+    networks:
+      - frontend_net
+      - backend_net
 networks:
-  default:
-    name: routes_shared_network
+  frontend_net:
+    external: true
+  backend_net:
     external: true
