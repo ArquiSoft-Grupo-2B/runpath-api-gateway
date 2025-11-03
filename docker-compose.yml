@@ -3,7 +3,7 @@ services:
     build: ./api-gateway
     container_name: api-gateway
     env_file:
-      - .env'
+      - .env
     command: npm start
     networks:
       - orchestration_net
