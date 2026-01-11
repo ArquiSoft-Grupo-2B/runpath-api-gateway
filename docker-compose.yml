@@ -1,13 +1,19 @@
 services:
   api-gateway:
     build: ./api-gateway
+    image: api-gateway:latest
     container_name: api-gateway
+    ports:
+      - "8888:8888"
     env_file:
       - .env
     command: npm start
     networks:
       - orchestration_net
       - backend_net
+
+    volumes:
+      - ./api-gateway/app/firebase-key.json:/app/app/firebase-key.json:ro
 networks:
   orchestration_net:
     external: true
